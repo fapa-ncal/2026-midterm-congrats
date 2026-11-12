@@ -280,7 +280,7 @@ const SUBJECTS = [
 ];
 const LETTER = `Dear [Elected Official],
 
-My name is [Your Name], and I am a [constituent]/[voter/resident in Northern California]. 
+My name is [Your Name], and I am a voter and resident in [City]. 
 
 First, I'd like to congratulate you and your team on your win! 
 
@@ -326,7 +326,7 @@ const TITLE = { CA: "Representative", SD: "Senator", AD: "Assemblymember", MAYOR
 function lastName(n) { return n === "Anamarie Ávila Farías" ? "Ávila Farías" : n.replace(/ (Jr\.|III|II)$/, "").split(" ").pop(); }
 function salutation(kind, r) { return TITLE[kind] + (r.isNew ? "-elect " : " ") + lastName(r.n); }
 function mailSubject() { return curCity ? SUBJECTS[0].replace("[City / Region]", curCity) : SUBJECTS[0]; }
-function mailBody(sal) { return sal ? LETTER.replace("[Elected Official]", sal) : LETTER; }
+function mailBody(sal) { let b = sal ? LETTER.replace("[Elected Official]", sal) : LETTER; return curCity ? b.replace("[City]", curCity) : b; }
 function gmailURL(to, sal) {
   return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
