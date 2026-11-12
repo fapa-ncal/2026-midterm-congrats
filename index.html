@@ -321,16 +321,22 @@ async function copyText(text, btn) {
   }
 }
 
-function gmailURL(to) {
-  return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(SUBJECTS[0]) + "&body=" + encodeURIComponent(LETTER);
+let curCity = "";
+const TITLE = { CA: "Representative", SD: "Senator", AD: "Assemblymember", MAYOR: "Mayor" };
+function lastName(n) { return n === "Anamarie Ávila Farías" ? "Ávila Farías" : n.replace(/ (Jr\.|III|II)$/, "").split(" ").pop(); }
+function salutation(kind, r) { return TITLE[kind] + (r.isNew ? "-elect " : " ") + lastName(r.n); }
+function mailSubject() { return curCity ? SUBJECTS[0].replace("[City / Region]", curCity) : SUBJECTS[0]; }
+function mailBody(sal) { return sal ? LETTER.replace("[Elected Official]", sal) : LETTER; }
+function gmailURL(to, sal) {
+  return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
-function outlookURL(to) {
-  return "https://outlook.live.com/mail/0/deeplink/compose?to=" + encodeURIComponent(to) + "&subject=" + encodeURIComponent(SUBJECTS[0]) + "&body=" + encodeURIComponent(LETTER);
+function outlookURL(to, sal) {
+  return "https://outlook.live.com/mail/0/deeplink/compose?to=" + encodeURIComponent(to) + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
-function contactHTML(r) {
+function contactHTML(r, sal) {
   let h = "";
   if (r.url) h += `<a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(t("form"))} ↗</a>`;
-  if (r.email) h += `<span class="email">${esc(r.email)}</span><button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button><a class="ghost" href="${gmailURL(r.email)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(r.email)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
+  if (r.email) h += `<span class="email">${esc(r.email)}</span><button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button><a class="ghost" href="${gmailURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
   return h ? `<div class="contact">${h}</div>` : "";
 }
 
@@ -341,7 +347,7 @@ function card(prefix, d, pct, r, outMsg) {
   const chips = r.pend ? `<span class="chip pending">${esc(t("pend"))}</span>` : r.isNew ? `<span class="chip new">${esc(t("isNew"))}</span>` : r.re ? `<span class="chip re">${esc(t("reElected"))}</span>` : "";
   const vs = r.vs ? `<p class="note">${esc(t("leadVs"))}${esc(r.vs)}</p>` : "";
   const note = r.note ? `<p class="note">${esc(t(r.note))}</p>` : "";
-  return `<div class="card">${tag}<div class="body"><div class="name">${esc(r.n)} (${r.p}) ${chips}</div>${vs}${contactHTML(r)}${note}</div></div>`;
+  return `<div class="card">${tag}<div class="body"><div class="name">${esc(r.n)} (${r.p}) ${chips}</div>${vs}${contactHTML(r, salutation(prefix, r))}${note}</div></div>`;
 }
 
 function list(entries) {
@@ -356,6 +362,7 @@ function render() {
   const z = ZIP[current.zip];
   if (!z) { out.innerHTML = `<div class="msg">${esc(t("none"))}</div>`; return; }
   const [city, cds, sds, ads] = z;
+  curCity = city || "";
   let h = `<div style="display:flex;flex-direction:column;gap:22px">`;
   h += `<div class="place"><span class="zipno">${esc(current.zip)}</span><span class="city">${esc(city || "")}</span>${current.example ? `<span class="example">${esc(t("example"))}</span>` : ""}</div>`;
 
@@ -376,7 +383,7 @@ function render() {
   h += `<section class="cat"><h2>${esc(t("mayor"))} <small>${esc(t("mayorWhen"))}</small></h2>`;
   if (m) {
     const chip = m.st === "called" ? "" : `<span class="chip pending">${esc(t(m.st))}</span>`;
-    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}) : ""}<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div></div></div>`;
+    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : ""}<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div></div></div>`;
   } else {
     h += `<div class="card dim"><div class="dist">${esc(city || "")}</div><div class="body"><div class="name">${esc(t("noMayor"))}</div></div></div>`;
   }
