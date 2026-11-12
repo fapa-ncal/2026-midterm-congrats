@@ -231,6 +231,7 @@ const T = {
   called:"已確定", leading:"領先，尚未宣布", close:"差距很小，尚未宣布",
   cityWeb:"市政府網站",
   noMayor:"市長沒有在 2026 期中選舉改選，或可能由市議會指派。",
+  mayorClose:"市長選舉結果尚未確定，結果出爐後會再更新。",
   formTip:"國會議員的聯絡表單大多只收選區內選民的來信，請由住在該選區的會員寄出。",
   tplTitle:"恭喜信範本",
   tplNote:"複製後貼到聯絡表單或 email。<mark class=\"remind\"><b>記得修改 [方括號] 內的資訊！</b></mark>加一兩句你自己的話，例如你住在哪個城市、為什麼關心台灣，辦公室比較不會把它當成制式信。",
@@ -270,6 +271,7 @@ const T = {
   called:"Called", leading:"Leading, not yet called", close:"Very close, not yet called",
   cityWeb:"City website",
   noMayor:"The mayor was not up for election in the 2026 midterms, or may be appointed by the city council.",
+  mayorClose:"The mayoral race has not been decided yet. We will update this once the result is final.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
   tplTitle:"Letter template",
   tplNote:"Copy it into the contact form or email. <mark class=\"remind\"><b>Remember to edit everything in [brackets]!</b></mark> Add a sentence or two in your own words, such as where you live or why Taiwan matters to you; offices give personal letters more attention than identical form letters.",
@@ -388,7 +390,9 @@ function render() {
 
   const m = MAYOR[city];
   h += `<section class="cat"><h2>${esc(t("mayor"))} <small>${esc(t("mayorWhen"))}</small></h2>`;
-  if (m) {
+  if (m && m.st === "close") {
+    h += `<div class="card dim"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(t("mayorClose"))}</div></div></div>`;
+  } else if (m) {
     const chip = m.st === "called" ? "" : `<span class="chip pending">${esc(t(m.st))}</span>`;
     h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}</div></div>`;
   } else {
