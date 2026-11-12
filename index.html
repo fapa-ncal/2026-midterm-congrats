@@ -324,7 +324,7 @@ function outlookURL(to) {
 function contactHTML(r) {
   let h = "";
   if (r.url) h += `<a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(t("form"))} ↗</a>`;
-  if (r.email) h += `<span class="email">${esc(r.email)}</span><button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button><a class="ghost" href="mailto:${esc(r.email)}?subject=${encodeURIComponent(SUBJECTS[0])}&body=${encodeURIComponent(LETTER)}">${esc(t("mailto"))}</a><a class="ghost" href="${gmailURL(r.email)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(r.email)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
+  if (r.email) h += `<span class="email">${esc(r.email)}</span><button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button><a class="ghost" href="${gmailURL(r.email)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(r.email)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
   return h ? `<div class="contact">${h}</div>` : "";
 }
 
