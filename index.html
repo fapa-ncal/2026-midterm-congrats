@@ -383,7 +383,7 @@ function render() {
   h += `<section class="cat"><h2>${esc(t("mayor"))} <small>${esc(t("mayorWhen"))}</small></h2>`;
   if (m) {
     const chip = m.st === "called" ? "" : `<span class="chip pending">${esc(t(m.st))}</span>`;
-    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : ""}<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div></div></div>`;
+    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : ""}</div></div>`;
   } else {
     h += `<div class="card dim"><div class="dist">${esc(city || "")}</div><div class="body"><div class="name">${esc(t("noMayor"))}</div></div></div>`;
   }
