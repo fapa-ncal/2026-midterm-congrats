@@ -302,6 +302,7 @@ let current = { zip: "94086", example: true };
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 const t = (k) => T[lang][k];
+const hl = (s) => esc(s).replace(/\[[^\]]*\]/g, m => `<mark>${m}</mark>`);
 
 function applyLang() {
   document.documentElement.lang = lang === "zh" ? "zh-Hant" : "en";
@@ -389,6 +390,7 @@ function render() {
   }
   h += `</section></div>`;
   out.innerHTML = h;
+  renderTemplate();
 }
 
 $("#form").addEventListener("submit", (e) => {
@@ -404,10 +406,11 @@ document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click
 $("#out").addEventListener("click", (e) => {
   const b = e.target.closest("[data-copy]"); if (b) copyText(b.dataset.copy, b);
 });
-$("#copy-letter").addEventListener("click", (e) => copyText(LETTER, e.currentTarget));
-const hl = (s) => esc(s).replace(/\[[^\]]*\]/g, m => `<mark>${m}</mark>`);
-$("#subjects").innerHTML = SUBJECTS.map(s => `<li>${hl(s)}</li>`).join("");
-$("#letter").innerHTML = hl(LETTER);
+$("#copy-letter").addEventListener("click", (e) => copyText(mailBody(""), e.currentTarget));
+function renderTemplate() {
+  $("#subjects").innerHTML = `<li>${hl(mailSubject())}</li>`;
+  $("#letter").innerHTML = hl(mailBody(""));
+}
 applyLang();
 </script>
 
