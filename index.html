@@ -171,11 +171,11 @@ const AD = {
   24:{n:"Alex Lee",p:"D",re:true,email:"assemblymember.lee@asm.ca.gov"},
   25:{n:"Ash Kalra",p:"D",re:true,email:"assemblymember.kalra@asm.ca.gov"},
   26:{n:"Patrick Ahrens",p:"D",re:true,email:"assemblymember.ahrens@asm.ca.gov"},
-  27:{n:"Brian Pacheco",p:"D",isNew:true,email:"brian@pachecoforca.com",note:"campaignEmail"},
+  27:{n:"Brian Pacheco",p:"D",isNew:true,email:"District1@fresnocountyca.gov, brian@pachecoforca.com",note:"bothEmail"},
   28:{n:"Gail Pellerin",p:"D",re:true,email:"assemblymember.pellerin@asm.ca.gov"},
   29:{n:"Robert Rivas",p:"D",re:true,email:"assemblymember.rivas@asm.ca.gov"},
   30:{n:"Dawn Addis",p:"D",re:true,email:"assemblymember.addis@asm.ca.gov"},
-  31:{n:"Annalisa Perea",p:"D",isNew:true,email:"annalisa@pereaforassembly.com",note:"campaignEmail"},
+  31:{n:"Annalisa Perea",p:"D",isNew:true,email:"Annalisa.Perea@fresno.gov, annalisa@pereaforassembly.com",note:"bothEmail"},
   32:{n:"David Couch",p:"R",isNew:true,email:"district4@kerncounty.com",note:"curOffice"},
   33:{n:"Alexandra Macedo",p:"R",pend:true,vs:"Hipolito Cerros (D)",email:"assemblymember.macedo@asm.ca.gov"},
   35:{n:"Andrae Gonzales",p:"D",isNew:true,email:"andrae@andraegonzales.com",note:"campaignEmail"}
@@ -226,6 +226,7 @@ const T = {
   after127:"新科州參議員的辦公室網站 12 月 7 日就職後才會換成他的頁面。",
   campaignEmail:"這是競選期間的信箱，就職後會有新的官方信箱。",
   curOffice:"這是目前職位的信箱，就職後會有新的官方信箱。",
+  bothEmail:"會同時寄到目前職位的信箱和競選信箱，就職後會有新的官方信箱。",
   asmNew:"12 月 7 日就職後，官方信箱會公布在 assembly.ca.gov。在那之前請透過競選網站聯絡。",
   called:"已確定", leading:"領先，尚未宣布", close:"差距很小，尚未宣布",
   cityWeb:"市政府網站",
@@ -264,6 +265,7 @@ const T = {
   after127:"The district office website switches to the new senator after the December 7 swearing-in.",
   campaignEmail:"This is a campaign email. An official email will be available after the swearing-in.",
   curOffice:"This is the email for their current office. An official email will be available after the swearing-in.",
+  bothEmail:"Sends to both their current office email and campaign email. An official email will be available after the swearing-in.",
   asmNew:"An official email will be posted at assembly.ca.gov after the December 7 swearing-in. Until then, use the campaign website.",
   called:"Called", leading:"Leading, not yet called", close:"Very close, not yet called",
   cityWeb:"City website",
@@ -341,7 +343,7 @@ function outlookURL(to, sal) {
 function contactHTML(r, sal) {
   let h = "";
   if (r.url) h += `<a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(t("form"))} ↗</a>`;
-  if (r.email) h += `<span class="email">${esc(r.email)}</span><button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button><a class="ghost" href="${gmailURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
+  if (r.email) h += r.email.split(", ").map(e => `<span class="email">${esc(e)}</span>`).join("") + `<button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button><a class="ghost" href="${gmailURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
   return h ? `<div class="contact">${h}</div>` : "";
 }
 
