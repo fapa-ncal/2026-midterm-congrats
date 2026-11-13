@@ -88,6 +88,14 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--font-b
 footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 footer a{color:var(--muted)}
 .copied{color:var(--accent);font-size:13px}
+.choose{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.choose h2{font-family:var(--font-head);font-size:20px;margin:0}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.choice{font:inherit;text-align:left;cursor:pointer;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.choice strong{font-size:17px}.choice span{font-size:14px;color:var(--muted)}
+.choice:hover,.choice:focus-visible{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.rolebar{margin:0;font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.linkbtn{font:inherit;font-size:14px;background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:0}
 mark{background:var(--hl);color:var(--ink);border-radius:3px;padding:0 2px}
 mark.remind{padding:2px 6px;display:inline-block;margin-inline:2px}
 @media (max-width:480px){.card{grid-template-columns:1fr}.dist{display:flex;gap:8px;align-items:baseline}.dist .pct{display:inline}}
@@ -111,6 +119,15 @@ mark.remind{padding:2px 6px;display:inline-block;margin-inline:2px}
     <div class="lede" data-i18n-html="lede"></div>
   </header>
 
+  <section class="choose" id="choose" aria-labelledby="choose-h">
+    <h2 id="choose-h" data-i18n="chooseQ"></h2>
+    <div class="choices">
+      <button type="button" class="choice" data-role="member"><strong data-i18n="memberT"></strong><span data-i18n="memberD"></span></button>
+      <button type="button" class="choice" data-role="friend"><strong data-i18n="friendT"></strong><span data-i18n="friendD"></span></button>
+    </div>
+  </section>
+  <p class="rolebar" id="rolebar" hidden><span id="roletext"></span><button type="button" class="linkbtn" id="switchRole" data-i18n="switchRole"></button></p>
+
   <form class="search" id="form" autocomplete="off">
     <label for="zip" data-i18n="label"></label>
     <div class="row">
@@ -122,7 +139,7 @@ mark.remind{padding:2px 6px;display:inline-block;margin-inline:2px}
 
   <div id="out" aria-live="polite"></div>
 
-  <section class="tpl" aria-labelledby="tpl-h">
+  <section class="tpl" id="tpl" aria-labelledby="tpl-h">
     <h2 id="tpl-h" data-i18n="tplTitle"></h2>
     <p class="note" data-i18n-html="tplNote"></p>
     <div>
@@ -239,6 +256,10 @@ const T = {
   asmNew:"12 月 7 日就職後，官方信箱會公布在 assembly.ca.gov。在那之前請透過競選網站聯絡。",
   called:"已確定", leading:"領先，尚未宣布", close:"差距很小，尚未宣布",
   cityWeb:"市政府網站",
+  chooseQ:"你是 FAPA 會員嗎？",
+  memberT:"我是 FAPA 會員", memberD:"使用 FAPA 北加州分會的恭喜信範本",
+  friendT:"我不是 FAPA 會員，但我關心台灣", friendD:"使用一般的個人恭喜信範本",
+  roleMember:"目前使用：FAPA 會員版範本", roleFriend:"目前使用：一般版範本", switchRole:"切換",
   noMayor:"市長沒有在 2026 期中選舉改選，或可能由市議會指派。",
   mayorClose:"市長選舉結果尚未確定，結果出爐後會再更新。",
   formTip:"國會議員的聯絡表單大多只收選區內選民的來信，請由住在該選區的會員寄出。",
@@ -279,6 +300,10 @@ const T = {
   asmNew:"An official email will be posted at assembly.ca.gov after the December 7 swearing-in. Until then, use the campaign website.",
   called:"Called", leading:"Leading, not yet called", close:"Very close, not yet called",
   cityWeb:"City website",
+  chooseQ:"Are you a FAPA member?",
+  memberT:"I'm a FAPA member", memberD:"Use the FAPA Northern California letter template",
+  friendT:"I'm not a FAPA member, but I care about Taiwan", friendD:"Use the general personal letter template",
+  roleMember:"Using: FAPA member template", roleFriend:"Using: general template", switchRole:"Switch",
   noMayor:"The mayor was not up for election in the 2026 midterms, or may be appointed by the city council.",
   mayorClose:"The mayoral race has not been decided yet. We will update this once the result is final.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
@@ -295,6 +320,20 @@ const T = {
 const SUBJECTS = [
  "Congratulations from the Taiwanese American Community of [City / Region]"
 ];
+const FRIEND_LETTER = `Dear [Elected Official],
+
+My name is [Your Name], and I am a resident of [City].
+
+Congratulations to you and your team on your win!
+
+As a [Taiwanese American / friend of the Taiwanese American community], I am proud to live in a community where Taiwanese American families are founders, engineers, small business owners, doctors, and engaged neighbors. Taiwan and the United States share the values of democracy, freedom, and human rights, and Taiwan is one of California's largest trading partners.
+
+I hope you will continue to support a strong U.S.–Taiwan relationship, and I look forward to seeing your work for our [district / city].
+
+Congratulations again!
+
+Sincerely,
+[Your Name]`;
 const LETTER = `Dear [Elected Official],
 
 My name is [Your Name], and I am a resident of [City]. 
@@ -315,6 +354,8 @@ Sincerely
 let lang = "zh";
 try { const s = localStorage.getItem("lang"); if (s === "en" || s === "zh") lang = s; } catch (e) {}
 let current = { zip: "94086", example: true };
+let role = null;
+try { const r = localStorage.getItem("role"); if (r === "member" || r === "friend") role = r; } catch (e) {}
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
@@ -326,6 +367,7 @@ function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
   document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  if (role && $("#roletext")) $("#roletext").textContent = t(role === "member" ? "roleMember" : "roleFriend");
   render();
 }
 
@@ -344,7 +386,7 @@ const TITLE = { CA: "Representative", SD: "Senator", AD: "Assemblymember", MAYOR
 function lastName(n) { return n === "Anamarie Ávila Farías" ? "Ávila Farías" : n.replace(/ (Jr\.|III|II)$/, "").split(" ").pop(); }
 function salutation(kind, r) { return TITLE[kind] + (r.isNew ? "-elect " : " ") + lastName(r.n); }
 function mailSubject() { return curCity ? SUBJECTS[0].replace("[City / Region]", curCity) : SUBJECTS[0]; }
-function mailBody(sal) { let b = sal ? LETTER.replace("[Elected Official]", sal) : LETTER; return curCity ? b.replace("[City]", curCity) : b; }
+function mailBody(sal) { const base = role === "friend" ? FRIEND_LETTER : LETTER; let b = sal ? base.replace("[Elected Official]", sal) : base; return curCity ? b.replace("[City]", curCity) : b; }
 const UA = navigator.userAgent || "";
 const IS_IOS = /iPhone|iPad|iPod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
 const IS_MOBILE = IS_IOS || /Android|Mobile/i.test(UA);
@@ -447,7 +489,19 @@ function renderTemplate() {
   $("#subjects").innerHTML = `<li>${hl(mailSubject())}</li>`;
   $("#letter").innerHTML = hl(mailBody(""));
 }
+function applyRole() {
+  $("#choose").hidden = !!role;
+  ["#form", "#out", "#tpl", "#rolebar"].forEach(s => $(s).hidden = !role);
+  if (role) $("#roletext").textContent = t(role === "member" ? "roleMember" : "roleFriend");
+  render();
+}
+document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => {
+  role = b.dataset.role; try { localStorage.setItem("role", role); } catch (e) {} applyRole();
+  $("#zip").focus();
+}));
+$("#switchRole").addEventListener("click", () => { role = null; try { localStorage.removeItem("role"); } catch (e) {} applyRole(); });
 applyLang();
+applyRole();
 </script>
 
 </body>
