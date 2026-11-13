@@ -137,7 +137,7 @@ mark.remind{padding:2px 6px;display:inline-block;margin-inline:2px}
     <p class="hint" data-i18n-html="hint"></p>
   </form>
 
-  <div id="out" aria-live="polite"></div>
+  <div id="out"></div>
 
   <section class="tpl" id="tpl" aria-labelledby="tpl-h">
     <h2 id="tpl-h" data-i18n="tplTitle"></h2>
@@ -392,11 +392,14 @@ function mailBody(sal) { const base = role === "friend" ? FRIEND_LETTER : LETTER
 const UA = navigator.userAgent || "";
 const IS_IOS = /iPhone|iPad|iPod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
 const IS_MOBILE = IS_IOS || /Android|Mobile/i.test(UA);
+function encRecipients(to) {
+  return to.split(", ").map(a => encodeURIComponent(a.trim()).replace(/%40/g, "@")).join(",");
+}
 function mailtoURL(to, sal) {
-  return "mailto:" + to.split(", ").join(",") + "?subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
+  return "mailto:" + encRecipients(to) + "?subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
 function gmailAppURL(to, sal) {
-  return "googlegmail:///co?to=" + to.split(", ").join(",") + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
+  return "googlegmail:///co?to=" + encRecipients(to) + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
 const MAILTO_LIMIT = 2000;
 function sendButtons(to, sal) {
@@ -447,9 +450,9 @@ function list(entries) {
 function render() {
   const out = $("#out");
   if (!current) { out.innerHTML = ""; return; }
-  if (current.error) { curCity = ""; out.innerHTML = `<div class="msg">${esc(t(current.error))}</div>`; renderTemplate(); return; }
+  if (current.error) { curCity = ""; out.innerHTML = `<div class="msg" role="status">${esc(t(current.error))}</div>`; renderTemplate(); return; }
   const z = ZIP[current.zip];
-  if (!z) { curCity = ""; out.innerHTML = `<div class="msg">${esc(t("none"))}</div>`; renderTemplate(); return; }
+  if (!z) { curCity = ""; out.innerHTML = `<div class="msg" role="status">${esc(t("none"))}</div>`; renderTemplate(); return; }
   const [city, cds, sds, ads] = z;
   curCity = city || "";
   let h = `<div style="display:flex;flex-direction:column;gap:22px">`;
