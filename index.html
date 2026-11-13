@@ -355,7 +355,6 @@ let lang = "zh";
 try { const s = localStorage.getItem("lang"); if (s === "en" || s === "zh") lang = s; } catch (e) {}
 let current = { zip: "94086", example: true };
 let role = null;
-try { const r = localStorage.getItem("role"); if (r === "member" || r === "friend") role = r; } catch (e) {}
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
@@ -496,10 +495,10 @@ function applyRole() {
   render();
 }
 document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => {
-  role = b.dataset.role; try { localStorage.setItem("role", role); } catch (e) {} applyRole();
+  role = b.dataset.role; applyRole();
   $("#zip").focus();
 }));
-$("#switchRole").addEventListener("click", () => { role = null; try { localStorage.removeItem("role"); } catch (e) {} applyRole(); });
+$("#switchRole").addEventListener("click", () => { role = null; applyRole(); });
 applyLang();
 applyRole();
 </script>
