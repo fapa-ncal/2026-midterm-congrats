@@ -243,7 +243,7 @@ const T = {
   mayor:"市長", mayorWhen:"依郵遞區名稱比對，請確認你住在該市範圍內",
   ofZip:"的人口",
   isNew:"新當選", reElected:"連任", pend:"尚未正式宣布當選", leadVs:"目前領先，結果確定後再寄信。對手：", pending:"尚未宣布結果",
-  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信", mailApp:"用手機郵件 App 寄信", copyLetter:"複製寫給這位的信", gmailApp:"用 Gmail App 寄信", copied:"已複製",
+  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信", mailApp:"用手機郵件 App 寄信", copyLetter:"複製寫給這位的信", gmailApp:"用 Gmail App 寄信", copied:"已複製", copyManual:"請手動複製",
   cdOut:"不在本工具範圍（本工具只涵蓋 CA-9 至 CA-21）。",
   sdOdd:"這個州參議員選區今年沒有改選。",
   sdOut:"這個選區今年有改選，但不在本工具範圍。",
@@ -287,7 +287,7 @@ const T = {
   mayor:"Mayor", mayorWhen:"Matched by postal area name; confirm you live inside the city limits",
   ofZip:"of ZIP",
   isNew:"Newly elected", reElected:"Re-elected", pend:"Not yet officially declared", leadVs:"Currently leading; wait for the final result before sending. Opponent: ", pending:"Not yet called",
-  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook", mailApp:"Send with mail app", copyLetter:"Copy letter to this official", gmailApp:"Send with Gmail app", copied:"Copied",
+  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook", mailApp:"Send with mail app", copyLetter:"Copy letter to this official", gmailApp:"Send with Gmail app", copied:"Copied", copyManual:"Please copy manually",
   cdOut:"Outside this tool's coverage (CA-9 to CA-21 only).",
   sdOdd:"This state senate seat was not up for election this year.",
   sdOut:"This seat was on the ballot, but it is outside this tool's coverage.",
@@ -372,13 +372,15 @@ function applyLang() {
 }
 
 async function copyText(text, btn) {
-  const done = () => { const o = btn.textContent; btn.textContent = t("copied"); setTimeout(() => btn.textContent = o, 1400); };
-  try { await navigator.clipboard.writeText(text); done(); }
-  catch (e) {
-    const sel = window.getSelection(); const r = document.createRange();
-    const target = btn.closest(".card, .tpl")?.querySelector(".email, pre") || null;
-    if (target) { r.selectNodeContents(target); sel.removeAllRanges(); sel.addRange(r); }
-  }
+  const flash = (msg) => { const o = btn.textContent; btn.textContent = msg; setTimeout(() => btn.textContent = o, 1400); };
+  try { await navigator.clipboard.writeText(text); flash(t("copied")); return; } catch (e) {}
+  let ok = false;
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+  document.body.appendChild(ta);
+  try { ta.select(); ta.setSelectionRange(0, text.length); ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove();
+  flash(t(ok ? "copied" : "copyManual"));
 }
 
 let curCity = "";
