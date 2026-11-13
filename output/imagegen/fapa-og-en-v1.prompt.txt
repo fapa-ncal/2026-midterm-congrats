@@ -1,0 +1,11 @@
+Use case: text-localization
+Edit target: the supplied approved FAPA social sharing image. Create the English version of this exact design, horizontal 1200x630 proportions. Preserve warm ivory background, navy and blue typography, red underline, complete FAPA Northern California logo at upper right, heart envelope illustration at lower right, bottom blue rule, and overall layout. Preserve logo unchanged, including all English lettering and red symbols.
+Replace all Chinese text with these EXACT English texts, adapting typography to fit beautifully with clear whitespace:
+Eyebrow top left: "2026 U.S. MIDTERM ELECTIONS"
+Large bold headline on left, three lines: "Congratulate" / "the winners in" / "your district!"
+Last headline line blue, with red underline. Keep headline large but prevent overlap with logo.
+Supporting copy lower left, two lines: "Find your elected officials by ZIP code." / "Send a warm letter of congratulations."
+Bottom left small label: "FAPA Northern California"
+No Chinese text, no extra text, no mockup. Clean flat design, readable thumbnail, faithful to the approved image.
+
+Generation mode: built-in image_gen. Delivery size exported with ImageMagick.

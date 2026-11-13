@@ -1,0 +1,6 @@
+Use case: compositing / logo-brand
+Asset type: a production favicon icon derived from the supplied FAPA Northern California logo.
+Input reference: the supplied circular FAPA seal is the source of the exact central red FAPA symbol/wordmark. Preserve its recognizable red F, triangular A with white Taiwan silhouette, red P, and red triangular final A.
+Create one square 1024x1024 favicon master, flat clean vector-style raster. Pure white opaque background filling the canvas. A thick royal blue rounded-square border inset 40px from edges, corner radius approximately 150px, stroke about 65px. Inside the border, center the source's bold red FAPA symbol as large as possible, around 800px wide. Make its strokes bold and clean and retain the white Taiwan silhouette inside the first A. The symbol should remain recognizable when tiny. Remove all surrounding English wording, globe lines, seal rings and fine details. Preserve the original FAPA red and blue. Exactly one icon fills the image, no mockups, no multiple size previews, no shadows, no gradients, no texture, no additional letters or words, no new motifs.
+
+Generation mode: built-in image_gen. Delivery sizes exported with ImageMagick.
