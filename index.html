@@ -243,7 +243,7 @@ const T = {
   mayor:"市長", mayorWhen:"依郵遞區名稱比對，請確認你住在該市範圍內",
   ofZip:"的人口",
   isNew:"新當選", reElected:"連任", pend:"尚未正式宣布當選", leadVs:"目前領先，結果確定後再寄信。對手：", pending:"尚未宣布結果",
-  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信", mailApp:"用手機郵件 App 寄信", copyLetter:"複製寫給這位的信", gmailApp:"用 Gmail App 寄信", copied:"已複製", copyManual:"請手動複製",
+  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信（個人帳號）", outlookWork:"用 Outlook 寄信（工作／學校帳號）", defaultMail:"用預設郵件程式寄信", longMail:"信件較長，部分郵件程式可能截斷內容，建議改用「複製寫給這位的信」。", mailApp:"用手機郵件 App 寄信", copyLetter:"複製寫給這位的信", gmailApp:"用 Gmail App 寄信", copied:"已複製", copyManual:"請手動複製",
   cdOut:"不在本工具範圍（本工具只涵蓋 CA-9 至 CA-21）。",
   sdOdd:"這個州參議員選區今年沒有改選。",
   sdOut:"這個選區今年有改選，但不在本工具範圍。",
@@ -287,7 +287,7 @@ const T = {
   mayor:"Mayor", mayorWhen:"Matched by postal area name; confirm you live inside the city limits",
   ofZip:"of ZIP",
   isNew:"Newly elected", reElected:"Re-elected", pend:"Not yet officially declared", leadVs:"Currently leading; wait for the final result before sending. Opponent: ", pending:"Not yet called",
-  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook", mailApp:"Send with mail app", copyLetter:"Copy letter to this official", gmailApp:"Send with Gmail app", copied:"Copied", copyManual:"Please copy manually",
+  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook (personal)", outlookWork:"Send with Outlook (work/school)", defaultMail:"Send with default mail app", longMail:"This letter is long and some mail apps may truncate it; consider 'Copy letter to this official' instead.", mailApp:"Send with mail app", copyLetter:"Copy letter to this official", gmailApp:"Send with Gmail app", copied:"Copied", copyManual:"Please copy manually",
   cdOut:"Outside this tool's coverage (CA-9 to CA-21 only).",
   sdOdd:"This state senate seat was not up for election this year.",
   sdOut:"This seat was on the ballot, but it is outside this tool's coverage.",
@@ -398,13 +398,17 @@ function mailtoURL(to, sal) {
 function gmailAppURL(to, sal) {
   return "googlegmail:///co?to=" + to.split(", ").join(",") + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
+const MAILTO_LIMIT = 2000;
 function sendButtons(to, sal) {
+  const mailto = mailtoURL(to, sal);
+  const note = mailto.length > MAILTO_LIMIT ? `<p class="note" style="flex-basis:100%">${esc(t("longMail"))}</p>` : "";
   if (IS_MOBILE) {
-    let h = `<a class="ghost" href="${mailtoURL(to, sal)}">${esc(t("mailApp"))}</a>`;
+    let h = `<a class="ghost" href="${mailto}">${esc(t("mailApp"))}</a>`;
     if (IS_IOS) h += `<a class="ghost" href="${gmailAppURL(to, sal)}">${esc(t("gmailApp"))}</a>`;
-    return h;
+    return h + note;
   }
-  return `<a class="ghost" href="${gmailURL(to, sal)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(to, sal)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
+  const ext = (u, k) => `<a class="ghost" href="${u}" target="_blank" rel="noopener">${esc(t(k))} ↗</a>`;
+  return ext(gmailURL(to, sal), "gmail") + ext(outlookURL(to, sal), "outlook") + ext(outlookWorkURL(to, sal), "outlookWork") + `<a class="ghost" href="${mailto}">${esc(t("defaultMail"))}</a>` + note;
 }
 function gmailURL(to, sal) {
   return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
@@ -412,8 +416,11 @@ function gmailURL(to, sal) {
 function outlookURL(to, sal) {
   return "https://outlook.live.com/mail/0/deeplink/compose?to=" + encodeURIComponent(to) + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
+function outlookWorkURL(to, sal) {
+  return "https://outlook.office.com/mail/deeplink/compose?to=" + encodeURIComponent(to) + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
+}
 function copyLetterBtn(sal) {
-  return `<div class="contact"><button type="button" class="ghost" data-copyletter="${esc(sal)}">${esc(t("copyLetter"))}</button></div>`;
+  return `<div class="contact"><button type="button" class="${IS_MOBILE ? 'btn' : 'ghost'}" data-copyletter="${esc(sal)}">${esc(t("copyLetter"))}</button></div>`;
 }
 function contactHTML(r, sal) {
   let h = "";
