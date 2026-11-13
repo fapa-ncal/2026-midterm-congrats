@@ -438,9 +438,9 @@ function list(entries) {
 function render() {
   const out = $("#out");
   if (!current) { out.innerHTML = ""; return; }
-  if (current.error) { out.innerHTML = `<div class="msg">${esc(t(current.error))}</div>`; return; }
+  if (current.error) { curCity = ""; out.innerHTML = `<div class="msg">${esc(t(current.error))}</div>`; renderTemplate(); return; }
   const z = ZIP[current.zip];
-  if (!z) { out.innerHTML = `<div class="msg">${esc(t("none"))}</div>`; return; }
+  if (!z) { curCity = ""; out.innerHTML = `<div class="msg">${esc(t("none"))}</div>`; renderTemplate(); return; }
   const [city, cds, sds, ads] = z;
   curCity = city || "";
   let h = `<div style="display:flex;flex-direction:column;gap:22px">`;
