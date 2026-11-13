@@ -40,6 +40,9 @@ const T = {
   subjTitle:"主旨",
   letterTitle:"信件內容",
   copy:"複製範本",
+  followTitle:"信寄出去了嗎？來 Instagram 找我們",
+  followText:"追蹤 FAPA 北加州分會，看最新活動和北加州台美人社群的消息。",
+  followBtn:"追蹤 @fapa.ncal",
   foot1:"選舉結果截至 2026 年 11 月 10 至 11 日，標示「尚未宣布」的選舉請等結果確定再寄。",
   foot2:"資料來源：zip code 對照來自<a href=\"https://sdmg.senate.ca.gov/committeehome/zip-code-directory\" target=\"_blank\" rel=\"noopener\">加州參議院人口統計辦公室</a>（國會為 Prop 50 新選區）；選舉結果來自加州州務卿、美聯社、KQED、Decision Desk HQ；州眾議員信箱來自加州州務卿 2026 年名冊。"
  },
@@ -84,6 +87,9 @@ const T = {
   subjTitle:"Subject line",
   letterTitle:"Letter",
   copy:"Copy template",
+  followTitle:"Sent your letter? Come say hi on Instagram",
+  followText:"Follow FAPA Northern California for upcoming events and news from our Taiwanese American community.",
+  followBtn:"Follow @fapa.ncal",
   foot1:"Results as of November 10–11, 2026. For races marked \"not yet called,\" wait until the result is final before sending.",
   foot2:"Sources: ZIP code data from the <a href=\"https://sdmg.senate.ca.gov/committeehome/zip-code-directory\" target=\"_blank\" rel=\"noopener\">California Senate Office of Demographics</a> (congressional data uses the new Prop 50 districts); election results from the California Secretary of State, AP, KQED, and Decision Desk HQ; Assembly emails from the Secretary of State's 2026 roster."
  }
