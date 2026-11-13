@@ -217,7 +217,7 @@ const T = {
   mayor:"市長", mayorWhen:"依郵遞區名稱比對，請確認你住在該市範圍內",
   ofZip:"的人口",
   isNew:"新當選", reElected:"連任", pend:"尚未正式宣布當選", leadVs:"目前領先，結果確定後再寄信。對手：", pending:"尚未宣布結果",
-  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信", copied:"已複製",
+  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信", mailApp:"用手機郵件 App 寄信", gmailApp:"用 Gmail App 寄信", copied:"已複製",
   cdOut:"不在本工具範圍（本工具只涵蓋 CA-9 至 CA-21）。",
   sdOdd:"這個州參議員選區今年沒有改選。",
   sdOut:"這個選區今年有改選，但不在本工具範圍。",
@@ -257,7 +257,7 @@ const T = {
   mayor:"Mayor", mayorWhen:"Matched by postal area name; confirm you live inside the city limits",
   ofZip:"of ZIP",
   isNew:"Newly elected", reElected:"Re-elected", pend:"Not yet officially declared", leadVs:"Currently leading; wait for the final result before sending. Opponent: ", pending:"Not yet called",
-  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook", copied:"Copied",
+  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook", mailApp:"Send with mail app", gmailApp:"Send with Gmail app", copied:"Copied",
   cdOut:"Outside this tool's coverage (CA-9 to CA-21 only).",
   sdOdd:"This state senate seat was not up for election this year.",
   sdOut:"This seat was on the ballot, but it is outside this tool's coverage.",
@@ -336,6 +336,23 @@ function lastName(n) { return n === "Anamarie Ávila Farías" ? "Ávila Farías"
 function salutation(kind, r) { return TITLE[kind] + (r.isNew ? "-elect " : " ") + lastName(r.n); }
 function mailSubject() { return curCity ? SUBJECTS[0].replace("[City / Region]", curCity) : SUBJECTS[0]; }
 function mailBody(sal) { let b = sal ? LETTER.replace("[Elected Official]", sal) : LETTER; return curCity ? b.replace("[City]", curCity) : b; }
+const UA = navigator.userAgent || "";
+const IS_IOS = /iPhone|iPad|iPod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
+const IS_MOBILE = IS_IOS || /Android|Mobile/i.test(UA);
+function mailtoURL(to, sal) {
+  return "mailto:" + to.split(", ").join(",") + "?subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
+}
+function gmailAppURL(to, sal) {
+  return "googlegmail:///co?to=" + to.split(", ").join(",") + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
+}
+function sendButtons(to, sal) {
+  if (IS_MOBILE) {
+    let h = `<a class="ghost" href="${mailtoURL(to, sal)}">${esc(t("mailApp"))}</a>`;
+    if (IS_IOS) h += `<a class="ghost" href="${gmailAppURL(to, sal)}">${esc(t("gmailApp"))}</a>`;
+    return h;
+  }
+  return `<a class="ghost" href="${gmailURL(to, sal)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(to, sal)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
+}
 function gmailURL(to, sal) {
   return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
@@ -345,7 +362,7 @@ function outlookURL(to, sal) {
 function contactHTML(r, sal) {
   let h = "";
   if (r.url) h += `<a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(t("form"))} ↗</a>`;
-  if (r.email) h += r.email.split(", ").map(e => `<span class="email">${esc(e)}</span>`).join("") + `<button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button><a class="ghost" href="${gmailURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("gmail"))} ↗</a><a class="ghost" href="${outlookURL(r.email, sal)}" target="_blank" rel="noopener">${esc(t("outlook"))} ↗</a>`;
+  if (r.email) h += r.email.split(", ").map(e => `<span class="email">${esc(e)}</span>`).join("") + `<button type="button" class="ghost" data-copy="${esc(r.email)}">${esc(t("copyEmail"))}</button>${sendButtons(r.email, sal)}`;
   return h ? `<div class="contact">${h}</div>` : "";
 }
 
