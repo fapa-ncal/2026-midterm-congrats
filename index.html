@@ -483,7 +483,25 @@ document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click
 $("#out").addEventListener("click", (e) => {
   const b = e.target.closest("[data-copy]"); if (b) copyText(b.dataset.copy, b);
 });
-$("#copy-letter").addEventListener("click", (e) => copyText(mailBody(""), e.currentTarget));
+function letterHTML(text) {
+  const linked = esc(text).replace("Formosan Association for Public Affairs (FAPA, https://fapa.org/)", '<a href="https://fapa.org/">Formosan Association for Public Affairs (FAPA)</a>');
+  return linked.split("\n\n").map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+}
+async function copyRich(text, btn) {
+  const done = () => { const o = btn.textContent; btn.textContent = t("copied"); setTimeout(() => btn.textContent = o, 1400); };
+  try {
+    if (window.ClipboardItem) {
+      const plain = text.replace("(FAPA, https://fapa.org/)", "(FAPA)");
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html": new Blob([letterHTML(text)], { type: "text/html" }),
+        "text/plain": new Blob([plain], { type: "text/plain" })
+      })]);
+      done(); return;
+    }
+  } catch (e) {}
+  copyText(text, btn);
+}
+$("#copy-letter").addEventListener("click", (e) => copyRich(mailBody(""), e.currentTarget));
 function renderTemplate() {
   $("#subjects").innerHTML = `<li>${hl(mailSubject())}</li>`;
   $("#letter").innerHTML = hl(mailBody(""));
