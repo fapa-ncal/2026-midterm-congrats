@@ -243,7 +243,7 @@ const T = {
   mayor:"市長", mayorWhen:"依郵遞區名稱比對，請確認你住在該市範圍內",
   ofZip:"的人口",
   isNew:"新當選", reElected:"連任", pend:"尚未正式宣布當選", leadVs:"目前領先，結果確定後再寄信。對手：", pending:"尚未宣布結果",
-  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信", mailApp:"用手機郵件 App 寄信", gmailApp:"用 Gmail App 寄信", copied:"已複製",
+  form:"開啟聯絡表單", copyEmail:"複製信箱", mailto:"寄信", gmail:"用 Gmail 寄信", outlook:"用 Outlook 寄信", mailApp:"用手機郵件 App 寄信", copyLetter:"複製寫給這位的信", gmailApp:"用 Gmail App 寄信", copied:"已複製",
   cdOut:"不在本工具範圍（本工具只涵蓋 CA-9 至 CA-21）。",
   sdOdd:"這個州參議員選區今年沒有改選。",
   sdOut:"這個選區今年有改選，但不在本工具範圍。",
@@ -287,7 +287,7 @@ const T = {
   mayor:"Mayor", mayorWhen:"Matched by postal area name; confirm you live inside the city limits",
   ofZip:"of ZIP",
   isNew:"Newly elected", reElected:"Re-elected", pend:"Not yet officially declared", leadVs:"Currently leading; wait for the final result before sending. Opponent: ", pending:"Not yet called",
-  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook", mailApp:"Send with mail app", gmailApp:"Send with Gmail app", copied:"Copied",
+  form:"Open contact form", copyEmail:"Copy email", mailto:"Email", gmail:"Send with Gmail", outlook:"Send with Outlook", mailApp:"Send with mail app", copyLetter:"Copy letter to this official", gmailApp:"Send with Gmail app", copied:"Copied",
   cdOut:"Outside this tool's coverage (CA-9 to CA-21 only).",
   sdOdd:"This state senate seat was not up for election this year.",
   sdOut:"This seat was on the ballot, but it is outside this tool's coverage.",
@@ -410,6 +410,9 @@ function gmailURL(to, sal) {
 function outlookURL(to, sal) {
   return "https://outlook.live.com/mail/0/deeplink/compose?to=" + encodeURIComponent(to) + "&subject=" + encodeURIComponent(mailSubject()) + "&body=" + encodeURIComponent(mailBody(sal));
 }
+function copyLetterBtn(sal) {
+  return `<div class="contact"><button type="button" class="ghost" data-copyletter="${esc(sal)}">${esc(t("copyLetter"))}</button></div>`;
+}
 function contactHTML(r, sal) {
   let h = "";
   if (r.url) h += `<a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(t("form"))} ↗</a>`;
@@ -424,7 +427,7 @@ function card(prefix, d, pct, r, outMsg) {
   const chips = r.pend ? `<span class="chip pending">${esc(t("pend"))}</span>` : r.isNew ? `<span class="chip new">${esc(t("isNew"))}</span>` : r.re ? `<span class="chip re">${esc(t("reElected"))}</span>` : "";
   const vs = r.vs ? `<p class="note">${esc(t("leadVs"))}${esc(r.vs)}</p>` : "";
   const note = r.note ? `<p class="note">${esc(t(r.note))}</p>` : "";
-  return `<div class="card">${tag}<div class="body"><div class="name">${esc(r.n)} (${r.p}) ${chips}</div>${vs}${contactHTML(r, salutation(prefix, r))}${note}</div></div>`;
+  return `<div class="card">${tag}<div class="body"><div class="name">${esc(r.n)} (${r.p}) ${chips}</div>${vs}${contactHTML(r, salutation(prefix, r))}${copyLetterBtn(salutation(prefix, r))}${note}</div></div>`;
 }
 
 function list(entries) {
@@ -462,7 +465,7 @@ function render() {
     h += `<div class="card dim"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(t("mayorClose"))}</div></div></div>`;
   } else if (m) {
     const chip = m.st === "called" ? "" : `<span class="chip pending">${esc(t(m.st))}</span>`;
-    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}</div></div>`;
+    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}${copyLetterBtn(salutation("MAYOR", m))}</div></div>`;
   } else {
     h += `<div class="card dim"><div class="dist">${esc(city || "")}</div><div class="body"><div class="name">${esc(t("noMayor"))}</div></div></div>`;
   }
@@ -482,6 +485,7 @@ document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click
   lang = b.dataset.lang; try { localStorage.setItem("lang", lang); } catch (e) {} applyLang();
 }));
 $("#out").addEventListener("click", (e) => {
+  const cl = e.target.closest("[data-copyletter]"); if (cl) { copyRich(mailBody(cl.dataset.copyletter), cl); return; }
   const b = e.target.closest("[data-copy]"); if (b) copyText(b.dataset.copy, b);
 });
 function letterHTML(text) {
