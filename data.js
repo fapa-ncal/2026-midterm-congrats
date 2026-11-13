@@ -3,7 +3,7 @@ const CD = {
   10:{n:"Mark DeSaulnier",p:"D",re:true,url:"https://desaulnier.house.gov/connect"},
   11:{n:"Scott Wiener",p:"D",isNew:true,url:"https://sd11.senate.ca.gov/contact",note:"wiener"},
   12:{n:"Lateefah Simon",p:"D",re:true,url:"https://simon.house.gov/contact"},
-  13:{n:"Adam Gray",p:"D",re:true,url:"https://gray.house.gov/contact"},
+  13:{n:"Adam Gray",p:"D",re:true,url:"https://gray.house.gov/address_authentication?form=/contact/email-me"},
   14:{n:"Aisha Wahab",p:"D",re:true,url:"https://wahab.house.gov/address_authentication?form=/contact/email-me"},
   15:{n:"Kevin Mullin",p:"D",re:true,url:"https://kevinmullin.house.gov/contact/"},
   16:{n:"Sam Liccardo",p:"D",re:true,url:"https://liccardo.house.gov/contact/email-me"},

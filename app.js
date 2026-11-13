@@ -34,6 +34,7 @@ const T = {
   roleMember:"目前使用：FAPA 會員版範本", roleFriend:"目前使用：一般版範本", switchRole:"切換",
   noMayor:"市長沒有在 2026 期中選舉改選，或可能由市議會指派。",
   mayorClose:"市長選舉結果尚未確定，結果出爐後會再更新。",
+  waitCall:"結果正式確定後，會再補上聯絡方式。",
   formTip:"國會議員的聯絡表單大多只收選區內選民的來信，請由住在該選區的會員寄出。",
   tplTitle:"恭喜信範本",
   tplNote:"複製後貼到聯絡表單或 email。<mark class=\"remind\"><b>記得修改 [方括號] 內的資訊！</b></mark>加一兩句你自己的話，例如你住在哪個城市、為什麼關心台灣，辦公室比較不會把它當成制式信。",
@@ -81,6 +82,7 @@ const T = {
   roleMember:"Using: FAPA member template", roleFriend:"Using: general template", switchRole:"Switch",
   noMayor:"The mayor was not up for election in the 2026 midterms, or may be appointed by the city council.",
   mayorClose:"The mayoral race has not been decided yet. We will update this once the result is final.",
+  waitCall:"Contact info will be added once the result is official.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
   tplTitle:"Letter template",
   tplNote:"Copy it into the contact form or email. <mark class=\"remind\"><b>Remember to edit everything in [brackets]!</b></mark> Add a sentence or two in your own words, such as where you live or why Taiwan matters to you; offices give personal letters more attention than identical form letters.",
@@ -245,6 +247,7 @@ function card(prefix, d, pct, r, outMsg) {
   const chips = r.pend ? `<span class="chip pending">${esc(t("pend"))}</span>` : r.isNew ? `<span class="chip new">${esc(t("isNew"))}</span>` : r.re ? `<span class="chip re">${esc(t("reElected"))}</span>` : "";
   const vs = r.vs ? `<p class="note">${esc(t("leadVs"))}${esc(r.vs)}</p>` : "";
   const note = r.note ? `<p class="note">${esc(t(r.note))}</p>` : "";
+  if (r.pend) return `<div class="card">${tag}<div class="body"><div class="name">${esc(r.n)} (${r.p}) ${chips}</div>${vs || `<p class="note">${esc(t("waitCall"))}</p>`}</div></div>`;
   return `<div class="card">${tag}<div class="body"><div class="name">${esc(r.n)} (${r.p}) ${chips}</div>${vs}${contactHTML(r, salutation(prefix, r))}${copyLetterBtn(salutation(prefix, r))}${note}</div></div>`;
 }
 
@@ -283,7 +286,7 @@ function render() {
     h += `<div class="card dim"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(t("mayorClose"))}</div></div></div>`;
   } else if (m) {
     const chip = m.st === "called" ? "" : `<span class="chip pending">${esc(t(m.st))}</span>`;
-    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}${copyLetterBtn(salutation("MAYOR", m))}</div></div>`;
+    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.st !== "called" ? `<p class="note">${esc(t("waitCall"))}</p>` : m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}${m.st === "called" ? copyLetterBtn(salutation("MAYOR", m)) : ""}</div></div>`;
   } else {
     h += `<div class="card dim"><div class="dist">${esc(city || "")}</div><div class="body"><div class="name">${esc(t("noMayor"))}</div></div></div>`;
   }
