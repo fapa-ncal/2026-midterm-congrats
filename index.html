@@ -340,7 +340,7 @@ My name is [Your Name], and I am a resident of [City].
 
 First, I'd like to congratulate you and your team on your win! 
 
-Second, I am also writing as a member of the Northern California chapter of the Formosan Association for Public Affairs (FAPA, https://fapa.org/). FAPA is a 501c3 founded in 1982 to educate and advocate policymakers and the American public on issues related to Taiwan, with 44 chapters and 2,700 members across America. 
+Second, I am also writing as a member of the Northern California chapter of the Formosan Association for Public Affairs (FAPA). FAPA is a 501c3 founded in 1982 to educate and advocate policymakers and the American public on issues related to Taiwan, with 44 chapters and 2,700 members across America. 
 
 Our Vision Statement says: “We believe a free, democratic, independent, and sovereign Taiwan is essential to peace and security for the United States…we organize and educate Taiwanese American communities and everyone who shares with us the values of freedom, democracy and human rights, to advocate for policies advancing closer and official US-Taiwan relations, Taiwan’s full international participation, and the recognition of Taiwan’s statehood as Taiwan based on the right to self-determination.”
 
@@ -349,7 +349,8 @@ We would love to be a source of information on Taiwan issues, as well as a conne
 Congratulations again and we look forward to working together! 
 
 Sincerely
-[Your Name]`;
+[Your Name]
+https://fapa.org/`;
 
 let lang = "zh";
 try { const s = localStorage.getItem("lang"); if (s === "en" || s === "zh") lang = s; } catch (e) {}
@@ -484,14 +485,14 @@ $("#out").addEventListener("click", (e) => {
   const b = e.target.closest("[data-copy]"); if (b) copyText(b.dataset.copy, b);
 });
 function letterHTML(text) {
-  const linked = esc(text).replace("Formosan Association for Public Affairs (FAPA, https://fapa.org/)", '<a href="https://fapa.org/">Formosan Association for Public Affairs (FAPA)</a>');
+  const linked = esc(text).replace("Formosan Association for Public Affairs (FAPA)", '<a href="https://fapa.org/">Formosan Association for Public Affairs (FAPA)</a>').replace(/\nhttps:\/\/fapa\.org\/$/, '\n<a href="https://fapa.org/">https://fapa.org/</a>');
   return linked.split("\n\n").map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
 }
 async function copyRich(text, btn) {
   const done = () => { const o = btn.textContent; btn.textContent = t("copied"); setTimeout(() => btn.textContent = o, 1400); };
   try {
     if (window.ClipboardItem) {
-      const plain = text.replace("(FAPA, https://fapa.org/)", "(FAPA)");
+      const plain = text;
       await navigator.clipboard.write([new ClipboardItem({
         "text/html": new Blob([letterHTML(text)], { type: "text/html" }),
         "text/plain": new Blob([plain], { type: "text/plain" })
