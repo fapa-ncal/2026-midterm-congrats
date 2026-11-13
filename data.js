@@ -1,0 +1,66 @@
+const CD = {
+  9:{n:"Josh Harder",p:"D",re:true,url:"https://harder.house.gov/contact"},
+  10:{n:"Mark DeSaulnier",p:"D",re:true,url:"https://desaulnier.house.gov/connect"},
+  11:{n:"Scott Wiener",p:"D",isNew:true,url:"https://sd11.senate.ca.gov/contact",note:"wiener"},
+  12:{n:"Lateefah Simon",p:"D",re:true,url:"https://simon.house.gov/contact"},
+  13:{n:"Adam Gray",p:"D",re:true,url:"https://gray.house.gov/contact"},
+  14:{n:"Aisha Wahab",p:"D",re:true,url:"https://wahab.house.gov/address_authentication?form=/contact/email-me"},
+  15:{n:"Kevin Mullin",p:"D",re:true,url:"https://kevinmullin.house.gov/contact/"},
+  16:{n:"Sam Liccardo",p:"D",re:true,url:"https://liccardo.house.gov/contact/email-me"},
+  17:{n:"Ro Khanna",p:"D",re:true,url:"https://khanna.house.gov/contact/email"},
+  18:{n:"Zoe Lofgren",p:"D",re:true,url:"https://lofgren.house.gov/address_authentication?form=/contact"},
+  19:{n:"Jimmy Panetta",p:"D",re:true,url:"https://panetta.house.gov/address_authentication?form=/contact"},
+  20:{n:"Vince Fong",p:"R",re:true,url:"https://fong.house.gov/address_authentication?form=/contact"},
+  21:{n:"Jim Costa",p:"D",re:true,url:"https://costa.house.gov/address_authentication?form=/contact/email-me"}
+};
+const SD = {
+  4:{n:"Alexandra Duarte",p:"R",isNew:true,pend:true,vs:"Jaron Brandon (D)",email:"alexandra@alexandraforsenate.com",note:"campaignEmail"},
+  10:{n:"Scott Sakakihara",p:"D",isNew:true,email:"scotts@unioncity.org, scott@electscott.com",note:"bothEmail"},
+  12:{n:"Nathan Magsig",p:"R",isNew:true,pend:true,email:"District5@fresnocountyca.gov",note:"curOffice"},
+  14:{n:"Esmeralda Soria",p:"D",isNew:true,email:"assemblymember.soria@assembly.ca.gov, info@soriaforcalifornia.com",note:"bothEmail"},
+  16:{n:"Melissa Hurtado",p:"D",re:true,email:"senator.hurtado@senate.ca.gov"}
+};
+const AD = {
+  9:{n:"Heath Flora",p:"R",pend:true,email:"assemblymember.flora@assembly.ca.gov"},
+  13:{n:"Rhodesia Ransom",p:"D",re:true,email:"assemblymember.ransom@assembly.ca.gov"},
+  14:{n:"Buffy Wicks",p:"D",re:true,email:"assemblymember.wicks@assembly.ca.gov"},
+  15:{n:"Anamarie Ávila Farías",p:"D",re:true,email:"assemblymember.farias@assembly.ca.gov"},
+  16:{n:"Rebecca Bauer-Kahan",p:"D",re:true,email:"assemblymember.bauer-kahan@assembly.ca.gov"},
+  17:{n:"Matt Haney",p:"D",re:true,email:"assemblymember.haney@assembly.ca.gov"},
+  18:{n:"Mia Bonta",p:"D",re:true,email:"assemblymember.bonta@assembly.ca.gov"},
+  19:{n:"Catherine Stefani",p:"D",re:true,email:"assemblymember.stefani@assembly.ca.gov"},
+  20:{n:"Liz Ortega",p:"D",re:true,email:"assemblymember.ortega@assembly.ca.gov"},
+  21:{n:"Diane Papan",p:"D",re:true,email:"assemblymember.papan@assembly.ca.gov"},
+  22:{n:"Juan Alanis",p:"R",re:true,email:"assemblymember.alanis@assembly.ca.gov"},
+  23:{n:"Marc Berman",p:"D",re:true,email:"assemblymember.berman@assembly.ca.gov"},
+  24:{n:"Alex Lee",p:"D",re:true,email:"assemblymember.lee@assembly.ca.gov"},
+  25:{n:"Ash Kalra",p:"D",re:true,email:"assemblymember.kalra@assembly.ca.gov"},
+  26:{n:"Patrick Ahrens",p:"D",re:true,email:"assemblymember.ahrens@assembly.ca.gov"},
+  27:{n:"Brian Pacheco",p:"D",isNew:true,email:"District1@fresnocountyca.gov, brian@pachecoforca.com, info@pachecoforca.com",note:"bothEmail"},
+  28:{n:"Gail Pellerin",p:"D",re:true,email:"assemblymember.pellerin@assembly.ca.gov"},
+  29:{n:"Robert Rivas",p:"D",re:true,email:"assemblymember.rivas@assembly.ca.gov"},
+  30:{n:"Dawn Addis",p:"D",re:true,email:"assemblymember.addis@assembly.ca.gov"},
+  31:{n:"Annalisa Perea",p:"D",isNew:true,email:"Annalisa.Perea@fresno.gov, annalisa@pereaforassembly.com",note:"bothEmail"},
+  32:{n:"David Couch",p:"R",isNew:true,email:"district4@kerncounty.com",note:"curOffice"},
+  33:{n:"Alexandra Macedo",p:"R",pend:true,vs:"Hipolito Cerros (D)",email:"assemblymember.macedo@assembly.ca.gov"},
+  35:{n:"Andrae Gonzales",p:"D",isNew:true,email:"andrae@andraegonzales.com",note:"campaignEmail"}
+};
+const MAYOR = {
+  "Oakland":{n:"Barbara Lee",st:"called",email:"officeofthemayor@oaklandca.gov",url:"https://www.oaklandca.gov/"},
+  "Alameda":{n:"Malia Vella",st:"leading",isNew:true,email:"mvella@alamedaca.gov",url:"https://www.alamedaca.gov/"},
+  "Dublin":{n:"Sherry Hu",st:"leading",email:"sherry.hu@dublin.ca.gov",url:"https://dublin.ca.gov/"},
+  "Hayward":{n:"Mark Salinas",st:"leading",email:"Mark.Salinas@hayward-ca.gov",url:"https://www.hayward-ca.gov/"},
+  "Pleasanton":{n:"Jack Balch",st:"leading",email:"jbalch@cityofpleasantonca.gov",url:"https://www.cityofpleasantonca.gov/"},
+  "San Leandro":{n:"Juan González III",st:"leading",email:"jgonzalez@sanleandro.org",url:"https://www.sanleandro.org/"},
+  "San Ramon":{n:"Mark Armstrong",st:"leading",email:"marmstrong@sanramon.ca.gov",url:"https://www.sanramon.ca.gov/"},
+  "Tracy":{n:"Dan Arriola",st:"leading",email:"dan.arriola@cityoftracy.org",url:"https://www.cityoftracy.org/"},
+  "Milpitas":{n:"Carmen Montano vs. Hon Lien",st:"close",url:"https://www.milpitas.gov/"},
+  "Santa Clara":{n:"Karen Hardy vs. Kathy Watanabe vs. David Kertes",st:"close",url:"https://www.santaclaraca.gov/"},
+  "Manteca":{n:"Jacob Naven vs. Gary Singh",st:"close",url:"https://www.manteca.gov/"},
+  "Morgan Hill":{n:"Mark Turner",st:"called",email:"mark.turner@morganhill.ca.gov",url:"https://www.morganhill.ca.gov/"},
+  "Newark":{n:"Michael Hannon",st:"called",email:"michael.hannon@newarkca.gov",url:"https://www.newark.org/"},
+  "Salinas":{n:"Dennis Donohue",st:"leading",email:"salinasmayor@ci.salinas.ca.us",url:"https://www.cityofsalinas.org/"},
+  "Lathrop":{n:"Paul Akinjo",st:"leading",email:"pakinjo@ci.lathrop.ca.us",url:"https://www.ci.lathrop.ca.us/"},
+  "Turlock":{n:"Amy Bublak vs. Jim Reape",st:"close",url:"https://www.cityofturlock.org/"},
+  "Patterson":{n:"Gabriela Hernandez",st:"leading",isNew:true,email:"ghernandez@pattersonca.gov",url:"https://pattersonca.gov/"}
+};
