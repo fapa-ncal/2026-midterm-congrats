@@ -14,7 +14,7 @@ const CD = {
   21:{n:"Jim Costa",p:"D",re:true,url:"https://costa.house.gov/address_authentication?form=/contact/email-me"}
 };
 const SD = {
-  4:{n:"Alexandra Duarte",p:"R",isNew:true,pend:true,vs:"Jaron Brandon (D)",email:"alexandra@alexandraforsenate.com",note:"campaignEmail"},
+  4:{n:"Alexandra Duarte",p:"R",isNew:true,email:"alexandra@alexandraforsenate.com",note:"campaignEmail"},
   10:{n:"Scott Sakakihara",p:"D",isNew:true,email:"scotts@unioncity.org, scott@electscott.com",note:"bothEmail"},
   12:{n:"Nathan Magsig",p:"R",isNew:true,pend:true,email:"District5@fresnocountyca.gov",note:"curOffice"},
   14:{n:"Esmeralda Soria",p:"D",isNew:true,email:"assemblymember.soria@assembly.ca.gov, info@soriaforcalifornia.com",note:"bothEmail"},
@@ -42,7 +42,7 @@ const AD = {
   30:{n:"Dawn Addis",p:"D",re:true,email:"assemblymember.addis@assembly.ca.gov"},
   31:{n:"Annalisa Perea",p:"D",isNew:true,email:"Annalisa.Perea@fresno.gov, annalisa@pereaforassembly.com",note:"bothEmail"},
   32:{n:"David Couch",p:"R",isNew:true,email:"district4@kerncounty.com",note:"curOffice"},
-  33:{n:"Alexandra Macedo",p:"R",pend:true,vs:"Hipolito Cerros (D)",email:"assemblymember.macedo@assembly.ca.gov"},
+  33:{n:"Hipolito Cerros",p:"D",isNew:true,pend:true,vs:"Alexandra Macedo (R)"},
   35:{n:"Andrae Gonzales",p:"D",isNew:true,email:"andrae@andraegonzales.com",note:"campaignEmail"}
 };
 const MAYOR = {
