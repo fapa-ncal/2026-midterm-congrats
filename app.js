@@ -285,7 +285,7 @@ function render() {
   if (m && m.st === "close") {
     h += `<div class="card dim"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(t("mayorClose"))}</div></div></div>`;
   } else if (m) {
-    const chip = m.st === "called" ? "" : `<span class="chip pending">${esc(t(m.st))}</span>`;
+    const chip = m.st !== "called" ? `<span class="chip pending">${esc(t(m.st))}</span>` : m.isNew ? `<span class="chip new">${esc(t("isNew"))}</span>` : m.re ? `<span class="chip re">${esc(t("reElected"))}</span>` : "";
     h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.st !== "called" ? `<p class="note">${esc(t("waitCall"))}</p>` : m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}${m.st === "called" ? copyLetterBtn(salutation("MAYOR", m)) : ""}</div></div>`;
   } else {
     h += `<div class="card dim"><div class="dist">${esc(city || "")}</div><div class="body"><div class="name">${esc(t("noMayor"))}</div></div></div>`;

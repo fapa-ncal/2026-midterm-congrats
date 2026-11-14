@@ -46,21 +46,21 @@ const AD = {
   35:{n:"Andrae Gonzales",p:"D",isNew:true,email:"andrae@andraegonzales.com",note:"campaignEmail"}
 };
 const MAYOR = {
-  "Oakland":{n:"Barbara Lee",st:"called",email:"officeofthemayor@oaklandca.gov",url:"https://www.oaklandca.gov/"},
+  "Oakland":{n:"Barbara Lee",st:"called",re:true,email:"officeofthemayor@oaklandca.gov",url:"https://www.oaklandca.gov/"},
   "Alameda":{n:"Malia Vella",st:"called",isNew:true,email:"mvella@alamedaca.gov",url:"https://www.alamedaca.gov/"},
-  "Dublin":{n:"Sherry Hu",st:"called",email:"sherry.hu@dublin.ca.gov",url:"https://dublin.ca.gov/"},
-  "Hayward":{n:"Mark Salinas",st:"called",email:"Mark.Salinas@hayward-ca.gov",url:"https://www.hayward-ca.gov/"},
-  "Pleasanton":{n:"Jack Balch",st:"called",email:"jbalch@cityofpleasantonca.gov",url:"https://www.cityofpleasantonca.gov/"},
-  "San Leandro":{n:"Juan González III",st:"called",email:"jgonzalez@sanleandro.org",url:"https://www.sanleandro.org/"},
-  "San Ramon":{n:"Mark Armstrong",st:"called",email:"marmstrong@sanramon.ca.gov",url:"https://www.sanramon.ca.gov/"},
-  "Tracy":{n:"Dan Arriola",st:"called",email:"dan.arriola@cityoftracy.org",url:"https://www.cityoftracy.org/"},
+  "Dublin":{n:"Sherry Hu",st:"called",re:true,email:"sherry.hu@dublin.ca.gov",url:"https://dublin.ca.gov/"},
+  "Hayward":{n:"Mark Salinas",st:"called",re:true,email:"Mark.Salinas@hayward-ca.gov",url:"https://www.hayward-ca.gov/"},
+  "Pleasanton":{n:"Jack Balch",st:"called",re:true,email:"jbalch@cityofpleasantonca.gov",url:"https://www.cityofpleasantonca.gov/"},
+  "San Leandro":{n:"Juan González III",st:"called",re:true,email:"jgonzalez@sanleandro.org",url:"https://www.sanleandro.org/"},
+  "San Ramon":{n:"Mark Armstrong",st:"called",re:true,email:"marmstrong@sanramon.ca.gov",url:"https://www.sanramon.ca.gov/"},
+  "Tracy":{n:"Dan Arriola",st:"called",re:true,email:"dan.arriola@cityoftracy.org",url:"https://www.cityoftracy.org/"},
   "Milpitas":{n:"Carmen Montano vs. Hon Lien",st:"close",url:"https://www.milpitas.gov/"},
   "Santa Clara":{n:"Karen Hardy vs. Kathy Watanabe vs. David Kertes",st:"close",url:"https://www.santaclaraca.gov/"},
   "Manteca":{n:"Jacob Naven vs. Gary Singh",st:"close",url:"https://www.manteca.gov/"},
-  "Morgan Hill":{n:"Mark Turner",st:"called",email:"mark.turner@morganhill.ca.gov",url:"https://www.morganhill.ca.gov/"},
-  "Newark":{n:"Michael Hannon",st:"called",email:"michael.hannon@newarkca.gov",url:"https://www.newark.org/"},
-  "Salinas":{n:"Dennis Donohue",st:"called",email:"salinasmayor@ci.salinas.ca.us",url:"https://www.cityofsalinas.org/"},
-  "Lathrop":{n:"Paul Akinjo",st:"leading",email:"pakinjo@ci.lathrop.ca.us",url:"https://www.ci.lathrop.ca.us/"},
+  "Morgan Hill":{n:"Mark Turner",st:"called",re:true,email:"mark.turner@morganhill.ca.gov, reelectmarkturnerformayor@gmail.com",url:"https://www.morganhill.ca.gov/"},
+  "Newark":{n:"Michael Hannon",st:"called",re:true,email:"michael.hannon@newarkca.gov",url:"https://www.newark.org/"},
+  "Salinas":{n:"Dennis Donohue",st:"called",re:true,email:"salinasmayor@ci.salinas.ca.us",url:"https://www.cityofsalinas.org/"},
+  "Lathrop":{n:"Paul Akinjo",st:"leading",re:true,email:"pakinjo@ci.lathrop.ca.us",url:"https://www.ci.lathrop.ca.us/"},
   "Turlock":{n:"Amy Bublak vs. Jim Reape",st:"close",url:"https://www.cityofturlock.org/"},
   "Patterson":{n:"Gabriela Hernandez",st:"leading",isNew:true,email:"ghernandez@pattersonca.gov",url:"https://pattersonca.gov/"}
 };
