@@ -26,7 +26,7 @@ const T = {
   curOffice:"這是目前職位的信箱，就職後會有新的官方信箱。",
   bothEmail:"會同時寄到目前職位的信箱和競選信箱，就職後會有新的官方信箱。",
   asmNew:"12 月 7 日就職後，官方信箱會公布在 assembly.ca.gov。在那之前請透過競選網站聯絡。",
-  called:"已確定", leading:"領先，尚未宣布", close:"差距很小，尚未宣布",
+  called:"已確定", landslide:"大幅領先", leading:"領先，尚未宣布", close:"差距很小，尚未宣布",
   cityWeb:"市政府網站",
   chooseQ:"你是 FAPA 會員嗎？",
   memberT:"我是 FAPA 會員", memberD:"使用 FAPA 北加州分會的恭喜信範本",
@@ -74,7 +74,7 @@ const T = {
   curOffice:"This is the email for their current office. An official email will be available after the swearing-in.",
   bothEmail:"Sends to both their current office email and campaign email. An official email will be available after the swearing-in.",
   asmNew:"An official email will be posted at assembly.ca.gov after the December 7 swearing-in. Until then, use the campaign website.",
-  called:"Called", leading:"Leading, not yet called", close:"Very close, not yet called",
+  called:"Called", landslide:"Leading by a wide margin", leading:"Leading, not yet called", close:"Very close, not yet called",
   cityWeb:"City website",
   chooseQ:"Are you a FAPA member?",
   memberT:"I'm a FAPA member", memberD:"Use the FAPA Northern California letter template",
@@ -285,8 +285,9 @@ function render() {
   if (m && m.st === "close") {
     h += `<div class="card dim"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(t("mayorClose"))}</div></div></div>`;
   } else if (m) {
-    const chip = m.st !== "called" ? `<span class="chip pending">${esc(t(m.st))}</span>` : m.isNew ? `<span class="chip new">${esc(t("isNew"))}</span>` : m.re ? `<span class="chip re">${esc(t("reElected"))}</span>` : "";
-    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${m.st !== "called" ? `<p class="note">${esc(t("waitCall"))}</p>` : m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}${m.st === "called" ? copyLetterBtn(salutation("MAYOR", m)) : ""}</div></div>`;
+    const ok = m.st === "called" || m.st === "landslide";
+    const chip = (m.st === "landslide" ? `<span class="chip pending">${esc(t("landslide"))}</span> ` : "") + (!ok ? `<span class="chip pending">${esc(t(m.st))}</span>` : m.isNew ? `<span class="chip new">${esc(t("isNew"))}</span>` : m.re ? `<span class="chip re">${esc(t("reElected"))}</span>` : "");
+    h += `<div class="card"><div class="dist">${esc(city)}</div><div class="body"><div class="name">${esc(m.n)} ${chip}</div>${!ok ? `<p class="note">${esc(t("waitCall"))}</p>` : m.email ? contactHTML({email:m.email}, salutation("MAYOR", m)) : `<div class="contact"><a class="ghost" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(t("cityWeb"))} ↗</a></div>`}${ok ? copyLetterBtn(salutation("MAYOR", m)) : ""}</div></div>`;
   } else {
     h += `<div class="card dim"><div class="dist">${esc(city || "")}</div><div class="body"><div class="name">${esc(t("noMayor"))}</div></div></div>`;
   }
