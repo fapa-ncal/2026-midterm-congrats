@@ -349,3 +349,37 @@ document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", ()
 $("#switchRole").addEventListener("click", () => { role = null; applyRole(); });
 applyLang();
 applyRole();
+
+/* ---- GoatCounter event tracking (button clicks only; no ZIP or personal data) ---- */
+function track(path, title) {
+  try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title: title || path, event: true }); } catch (_) {}
+}
+function actionOf(el) {
+  if (el.dataset.copyletter !== undefined) return "copy-letter";
+  if (el.dataset.copy !== undefined) return "copy-email";
+  const h = el.getAttribute("href") || "";
+  if (h.startsWith("https://mail.google.com")) return "gmail";
+  if (h.startsWith("googlegmail:")) return "gmail-app";
+  if (h.startsWith("https://outlook.live.com")) return "outlook";
+  if (h.startsWith("https://outlook.office.com")) return "outlook-work";
+  if (h.startsWith("mailto:")) return "mail-app";
+  if (h) return "contact-form";
+  return null;
+}
+$("#out").addEventListener("click", (e) => {
+  const el = e.target.closest("a, button"); if (!el) return;
+  const card = el.closest(".card"); if (!card) return;
+  const act = actionOf(el); if (!act) return;
+  const dist = (card.querySelector(".dist")?.childNodes[0]?.textContent || "").trim();
+  const name = (card.querySelector(".name")?.childNodes[0]?.textContent || "").trim();
+  const who = (dist + " " + name).trim();
+  track("send/" + act + "/" + who, act + " · " + who + " · " + (role || ""));
+  track("total/" + act, "All recipients · " + act);
+  if (["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"].includes(act)) {
+    track("recipient/" + who, who);
+    track("role/" + (role || "unknown") + "/send", "Send clicks by " + (role || "unknown"));
+  }
+}, true);
+document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => track("role/" + b.dataset.role, "Chose: " + b.dataset.role)));
+$("#form").addEventListener("submit", () => track("lookup", "ZIP lookup"));
+$("#copy-letter").addEventListener("click", () => track("total/copy-template", "Copied template letter"));
