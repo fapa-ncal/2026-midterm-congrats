@@ -42,7 +42,7 @@ const AD = {
   30:{n:"Dawn Addis",p:"D",re:true,email:"assemblymember.addis@assembly.ca.gov"},
   31:{n:"Annalisa Perea",p:"D",isNew:true,email:"Annalisa.Perea@fresno.gov, annalisa@pereaforassembly.com",note:"bothEmail"},
   32:{n:"David Couch",p:"R",isNew:true,email:"district4@kerncounty.com",note:"curOffice"},
-  33:{n:"Hipolito Cerros",p:"D",isNew:true,pend:true,vs:"Alexandra Macedo (R)"},
+  33:{close:true},
   35:{n:"Andrae Gonzales",p:"D",isNew:true,email:"andrae@andraegonzales.com",note:"campaignEmail"}
 };
 const MAYOR = {
