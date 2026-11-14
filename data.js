@@ -16,12 +16,12 @@ const CD = {
 const SD = {
   4:{n:"Alexandra Duarte",p:"R",isNew:true,email:"alexandra@alexandraforsenate.com",note:"campaignEmail"},
   10:{n:"Scott Sakakihara",p:"D",isNew:true,email:"scotts@unioncity.org, scott@electscott.com",note:"bothEmail"},
-  12:{n:"Nathan Magsig",p:"R",isNew:true,pend:true,email:"District5@fresnocountyca.gov",note:"curOffice"},
+  12:{n:"Nathan Magsig",p:"R",isNew:true,email:"District5@fresnocountyca.gov",note:"curOffice"},
   14:{n:"Esmeralda Soria",p:"D",isNew:true,email:"assemblymember.soria@assembly.ca.gov, info@soriaforcalifornia.com",note:"bothEmail"},
   16:{n:"Melissa Hurtado",p:"D",re:true,email:"senator.hurtado@senate.ca.gov"}
 };
 const AD = {
-  9:{n:"Heath Flora",p:"R",pend:true,email:"assemblymember.flora@assembly.ca.gov"},
+  9:{n:"Heath Flora",p:"R",re:true,email:"assemblymember.flora@assembly.ca.gov"},
   13:{n:"Rhodesia Ransom",p:"D",re:true,email:"assemblymember.ransom@assembly.ca.gov"},
   14:{n:"Buffy Wicks",p:"D",re:true,email:"assemblymember.wicks@assembly.ca.gov"},
   15:{n:"Anamarie Ávila Farías",p:"D",re:true,email:"assemblymember.farias@assembly.ca.gov"},
