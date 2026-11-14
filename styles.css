@@ -94,3 +94,5 @@ mark.remind{padding:2px 6px;display:inline-block;margin-inline:2px}
 .sent{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line, #ddd)}
 .sent[hidden]{display:none}
 .sent-done{font-weight:600;color:var(--accent)}
+.tally{display:inline-block;margin:14px 0 0;padding:8px 14px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700}
+.tally[hidden]{display:none}

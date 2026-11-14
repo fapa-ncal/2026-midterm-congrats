@@ -35,7 +35,7 @@ const T = {
   noMayor:"市長沒有在 2026 期中選舉改選，或可能由市議會指派。",
   mayorClose:"市長選舉結果尚未確定，結果出爐後會再更新。",
   raceClose:"選舉結果尚未確定，結果出爐後會再更新。",
-  sentAsk:"寄出後，按一下讓我們知道：", sentBtn:"✅ 我已送出恭喜信囉！", sentDone:"謝謝你！🎉 已記錄你送出的恭喜信",
+  tally:"🎉 已有 {n} 位朋友一起來寄恭喜信囉！", sentAsk:"寄出後，按一下讓我們知道：", sentBtn:"✅ 我已送出恭喜信囉！", sentDone:"謝謝你！🎉 已記錄你送出的恭喜信",
   waitCall:"結果正式確定後，會再補上聯絡方式。",
   formTip:"國會議員的聯絡表單大多只收選區內選民的來信，請由住在該選區的會員寄出。",
   tplTitle:"恭喜信範本",
@@ -85,7 +85,7 @@ const T = {
   noMayor:"The mayor was not up for election in the 2026 midterms, or may be appointed by the city council.",
   mayorClose:"The mayoral race has not been decided yet. We will update this once the result is final.",
   raceClose:"This race has not been decided yet. We will update this once the result is final.",
-  sentAsk:"Once you have sent it, let us know:", sentBtn:"✅ I sent my congratulations!", sentDone:"Thank you! 🎉 Your letter has been counted",
+  tally:"🎉 {n} friends have already sent their congratulations!", sentAsk:"Once you have sent it, let us know:", sentBtn:"✅ I sent my congratulations!", sentDone:"Thank you! 🎉 Your letter has been counted",
   waitCall:"Contact info will be added once the result is official.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
   tplTitle:"Letter template",
@@ -150,6 +150,7 @@ const t = (k) => T[lang][k];
 const hl = (s) => esc(s).replace(/\[[^\]]*\]/g, m => `<mark>${m}</mark>`);
 
 function applyLang() {
+  renderTally();
   const meta = PAGE_META[lang];
   const publicRoot = document.querySelector('link[hreflang="en"]').href;
   const pageURL = new URL(meta.path, publicRoot).href;
@@ -419,3 +420,16 @@ $("#out").addEventListener("click", (e) => {
   }
   b.closest(".sent").innerHTML = sentDoneHTML();
 });
+
+/* ---- Public tally of people who reported sending (GoatCounter public counter) ---- */
+var tallyN = 0;
+function renderTally() {
+  const el = document.getElementById("tally"); if (!el) return;
+  if (!tallyN) { el.hidden = true; return; }
+  el.textContent = t("tally").replace("{n}", tallyN.toLocaleString());
+  el.hidden = false;
+}
+fetch("https://fapa-ncal.goatcounter.com/counter/sent-total.json")
+  .then(r => r.ok ? r.json() : null)
+  .then(d => { if (d && d.count) { tallyN = parseInt(String(d.count).replace(/[^\d]/g, ""), 10) || 0; renderTally(); } })
+  .catch(() => {});
