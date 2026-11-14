@@ -89,7 +89,7 @@ const T = {
   waitCall:"Contact info will be added once the result is official.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
   tplTitle:"Letter template",
-  tplNote:"Copy it into the contact form or email. <mark class=\"remind\"><b>Remember to edit everything in [brackets]!</b></mark> Add a sentence or two in your own words, such as where you live or why Taiwan matters to you; offices give personal letters more attention than identical form letters.",
+  tplNote:"Copy it into the contact form or email. <mark class=\"remind\"><b>Remember to edit everything in [brackets]!</b></mark> <b>Add a sentence or two in your own words</b> (for example, why you care about Taiwan), so the office won't treat it as a form letter!",
   subjTitle:"Subject line",
   letterTitle:"Letter",
   copy:"Copy template",
