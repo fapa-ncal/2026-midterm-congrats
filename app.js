@@ -423,9 +423,10 @@ $("#out").addEventListener("click", (e) => {
 
 /* ---- Public tally of people who reported sending (GoatCounter public counter) ---- */
 var tallyN = 0;
+var SHOW_TALLY = false; // set to true to show the public "N friends" banner again
 function renderTally() {
   const el = document.getElementById("tally"); if (!el) return;
-  if (!tallyN) { el.hidden = true; return; }
+  if (!SHOW_TALLY || !tallyN) { el.hidden = true; return; }
   el.textContent = t("tally").replace("{n}", tallyN.toLocaleString());
   el.hidden = false;
 }
