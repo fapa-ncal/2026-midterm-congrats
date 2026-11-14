@@ -85,7 +85,7 @@ const T = {
   noMayor:"The mayor was not up for election in the 2026 midterms, or may be appointed by the city council.",
   mayorClose:"The mayoral race has not been decided yet. We will update this once the result is final.",
   raceClose:"This race has not been decided yet. We will update this once the result is final.",
-  tally:"🎉 {n} friends have already sent their congratulations!", sentAsk:"Once you have sent it, let us know:", sentBtn:"✅ I sent my congratulations!", sentDone:"Thank you! 🎉 Your letter has been counted",
+  tally:"🎉 {n} friends are here to send their congratulations!", sentAsk:"Once you have sent it, let us know:", sentBtn:"✅ I sent my congratulations!", sentDone:"Thank you! 🎉 Your letter has been counted",
   waitCall:"Contact info will be added once the result is official.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
   tplTitle:"Letter template",
