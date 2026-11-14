@@ -35,6 +35,7 @@ const T = {
   noMayor:"市長沒有在 2026 期中選舉改選，或可能由市議會指派。",
   mayorClose:"市長選舉結果尚未確定，結果出爐後會再更新。",
   raceClose:"選舉結果尚未確定，結果出爐後會再更新。",
+  sentAsk:"寄出後，按一下讓我們知道：", sentBtn:"✅ 我已送出恭喜信囉！", sentDone:"謝謝你！🎉 已記錄你送出的恭喜信",
   waitCall:"結果正式確定後，會再補上聯絡方式。",
   formTip:"國會議員的聯絡表單大多只收選區內選民的來信，請由住在該選區的會員寄出。",
   tplTitle:"恭喜信範本",
@@ -84,6 +85,7 @@ const T = {
   noMayor:"The mayor was not up for election in the 2026 midterms, or may be appointed by the city council.",
   mayorClose:"The mayoral race has not been decided yet. We will update this once the result is final.",
   raceClose:"This race has not been decided yet. We will update this once the result is final.",
+  sentAsk:"Once you have sent it, let us know:", sentBtn:"✅ I sent my congratulations!", sentDone:"Thank you! 🎉 Your letter has been counted",
   waitCall:"Contact info will be added once the result is official.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
   tplTitle:"Letter template",
@@ -296,6 +298,7 @@ function render() {
   }
   h += `</section></div>`;
   out.innerHTML = h;
+  decorateSent();
   renderTemplate();
 }
 
@@ -370,16 +373,49 @@ $("#out").addEventListener("click", (e) => {
   const el = e.target.closest("a, button"); if (!el) return;
   const card = el.closest(".card"); if (!card) return;
   const act = actionOf(el); if (!act) return;
-  const dist = (card.querySelector(".dist")?.childNodes[0]?.textContent || "").trim();
-  const name = (card.querySelector(".name")?.childNodes[0]?.textContent || "").trim();
-  const who = (dist + " " + name).trim();
+  const who = whoOf(card);
   track("send/" + act + "/" + who, act + " · " + who + " · " + (role || ""));
   track("total/" + act, "All recipients · " + act);
   if (["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"].includes(act)) {
     track("recipient/" + who, who);
     track("role/" + (role || "unknown") + "/send", "Send clicks by " + (role || "unknown"));
   }
+  const sr = card.querySelector(".sent"); if (sr) sr.hidden = false;
 }, true);
 document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => track("role/" + b.dataset.role, "Chose: " + b.dataset.role)));
 $("#form").addEventListener("submit", () => track("lookup", "ZIP lookup"));
 $("#copy-letter").addEventListener("click", () => track("total/copy-template", "Copied template letter"));
+
+/* ---- "I sent it" self-report ---- */
+var SEND_ACTS = ["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"];
+function whoOf(card) {
+  const dist = (card.querySelector(".dist")?.childNodes[0]?.textContent || "").trim();
+  const name = (card.querySelector(".name")?.childNodes[0]?.textContent || "").trim();
+  return (dist + " " + name).trim();
+}
+function sentKey(who) { return "fapa-sent:" + who; }
+function wasSent(who) { try { return localStorage.getItem(sentKey(who)) === "1"; } catch (_) { return false; } }
+function sentDoneHTML() { return `<span class="sent-done">${esc(t("sentDone"))}</span>`; }
+function decorateSent() {
+  document.querySelectorAll("#out .card").forEach(card => {
+    const hasSend = [...card.querySelectorAll("a, button")].some(el => ["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"].includes(actionOf(el)));
+    if (!hasSend || card.querySelector(".sent")) return;
+    const who = whoOf(card);
+    const div = document.createElement("div");
+    div.className = "sent";
+    if (wasSent(who)) div.innerHTML = sentDoneHTML();
+    else { div.hidden = true; div.innerHTML = `<span class="note">${esc(t("sentAsk"))}</span><button type="button" class="btn" data-sent>${esc(t("sentBtn"))}</button>`; }
+    card.querySelector(".body").appendChild(div);
+  });
+}
+$("#out").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-sent]"); if (!b) return;
+  const card = b.closest(".card"); const who = whoOf(card);
+  if (!wasSent(who)) {
+    track("sent/" + who, "Sent · " + who);
+    track("sent-total", "Letters reported sent (all)");
+    track("sent-role/" + (role || "unknown"), "Letters reported sent by " + (role || "unknown"));
+    try { localStorage.setItem(sentKey(who), "1"); } catch (_) {}
+  }
+  b.closest(".sent").innerHTML = sentDoneHTML();
+});

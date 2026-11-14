@@ -90,3 +90,7 @@ mark.remind{padding:2px 6px;display:inline-block;margin-inline:2px}
 @media (prefers-reduced-motion:no-preference){.card{animation:in .25s ease both}@keyframes in{from{transform:translateY(4px)}to{transform:none}}}
 
 [hidden]{display:none!important}img{max-width:100%}
+
+.sent{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line, #ddd)}
+.sent[hidden]{display:none}
+.sent-done{font-weight:600;color:var(--accent)}
