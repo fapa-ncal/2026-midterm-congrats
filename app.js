@@ -35,7 +35,7 @@ const T = {
   noMayor:"市長沒有在 2026 期中選舉改選，或可能由市議會指派。",
   mayorClose:"市長選舉結果尚未確定，結果出爐後會再更新。",
   raceClose:"選舉結果尚未確定，結果出爐後會再更新。",
-  tally:"🎉 已有 {n} 位朋友一起來寄恭喜信囉！", sentAsk:"寄出後，按一下讓我們知道：", sentBtn:"✅ 我已送出恭喜信囉！", sentDone:"謝謝你！🎉 已記錄你送出的恭喜信",
+  tally:"🎉 已有 {n} 位朋友一起來寄恭喜信囉！", sentLabel:"已寄出", progress:"已寄出 {done}／{total} 位",
   waitCall:"結果正式確定後，會再補上聯絡方式。",
   formTip:"國會議員的聯絡表單大多只收選區內選民的來信，請由住在該選區的會員寄出。",
   tplTitle:"恭喜信範本",
@@ -85,7 +85,7 @@ const T = {
   noMayor:"The mayor was not up for election in the 2026 midterms, or may be appointed by the city council.",
   mayorClose:"The mayoral race has not been decided yet. We will update this once the result is final.",
   raceClose:"This race has not been decided yet. We will update this once the result is final.",
-  tally:"🎉 {n} friends are here to send their congratulations!", sentAsk:"Once you have sent it, let us know:", sentBtn:"✅ I sent my congratulations!", sentDone:"Thank you! 🎉 Your letter has been counted",
+  tally:"🎉 {n} friends are here to send their congratulations!", sentLabel:"Sent", progress:"Sent {done} of {total}",
   waitCall:"Contact info will be added once the result is official.",
   formTip:"Most congressional contact forms only accept messages from constituents, so letters should come from members who live in the district.",
   tplTitle:"Letter template",
@@ -143,6 +143,9 @@ document.querySelector("base").href = SITE_ROOT.href;
 let lang = document.documentElement.lang === "zh-TW" ? "zh" : "en";
 let current = { zip: "94086", example: true };
 let role = null;
+// Buttons that open a way to send the letter (vs. copy buttons).
+const SEND_ACTS = ["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"];
+let pendingNudge = null; // official whose send button was clicked last; nudged when the visitor comes back
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
@@ -400,7 +403,7 @@ $("#out").addEventListener("click", (e) => {
     track("recipient/" + who, who);
     track("role/" + (role || "unknown") + "/send", "Send clicks by " + (role || "unknown"));
   }
-  const sr = card.querySelector(".sent"); if (sr) sr.hidden = false;
+  if (SEND_ACTS.includes(act)) pendingNudge = who;
 }, true);
 document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => {
   track("role/" + b.dataset.role, "Chose: " + b.dataset.role);
@@ -418,40 +421,76 @@ $("#copy-letter").addEventListener("click", () => {
 });
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => gaEvent("lang_switch", { to: b.dataset.lang })));
 
-/* ---- "I sent it" self-report ---- */
-var SEND_ACTS = ["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"];
+/* ---- "Sent" checklist: lets people track their own progress; the first tick per official is reported ---- */
 function whoOf(card) {
   const dist = (card.querySelector(".dist")?.childNodes[0]?.textContent || "").trim();
   const name = (card.querySelector(".name")?.childNodes[0]?.textContent || "").trim();
   return (dist + " " + name).trim();
 }
+function readFlag(key) { try { return localStorage.getItem(key) === "1"; } catch (_) { return false; } }
+function writeFlag(key, on) { try { on ? localStorage.setItem(key, "1") : localStorage.removeItem(key); } catch (_) {} }
+// "fapa-sent" = currently ticked; "fapa-reported" = already counted once, so un-ticking and re-ticking never double counts.
 function sentKey(who) { return "fapa-sent:" + who; }
-function wasSent(who) { try { return localStorage.getItem(sentKey(who)) === "1"; } catch (_) { return false; } }
-function sentDoneHTML() { return `<span class="sent-done">${esc(t("sentDone"))}</span>`; }
+function reportedKey(who) { return "fapa-reported:" + who; }
+function wasSent(who) { return readFlag(sentKey(who)); }
+function wasReported(who) { return readFlag(reportedKey(who)) || wasSent(who); }
+function sendCards() {
+  return [...document.querySelectorAll("#out .card")].filter(card => [...card.querySelectorAll("a, button")].some(el => SEND_ACTS.includes(actionOf(el))));
+}
+function sentCheckHTML(checked) {
+  return `<label class="sent-check"><input type="checkbox" data-sent${checked ? " checked" : ""}><span>${esc(t("sentLabel"))}</span></label>`;
+}
+function renderProgress() {
+  const box = $("#out > div"); if (!box) return;
+  const whos = [...new Set(sendCards().map(whoOf))];
+  let el = $("#progress");
+  if (!whos.length) { if (el) el.remove(); return; }
+  if (!el) { el = document.createElement("p"); el.id = "progress"; el.className = "progress"; el.setAttribute("role", "status"); box.prepend(el); }
+  const done = whos.filter(wasSent).length;
+  el.hidden = done === 0; // the tick boxes explain themselves; only show a count once there is one
+  el.classList.toggle("done", done === whos.length);
+  el.textContent = t("progress").replace("{done}", done).replace("{total}", whos.length);
+}
 function decorateSent() {
-  document.querySelectorAll("#out .card").forEach(card => {
-    const hasSend = [...card.querySelectorAll("a, button")].some(el => ["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"].includes(actionOf(el)));
-    if (!hasSend || card.querySelector(".sent")) return;
+  sendCards().forEach(card => {
+    if (card.querySelector(".sent")) return;
     const who = whoOf(card);
+    if (wasSent(who)) writeFlag(reportedKey(who), true); // ticks saved before this version were already counted
     const div = document.createElement("div");
     div.className = "sent";
-    if (wasSent(who)) div.innerHTML = sentDoneHTML();
-    else { div.hidden = true; div.innerHTML = `<span class="note">${esc(t("sentAsk"))}</span><button type="button" class="btn" data-sent>${esc(t("sentBtn"))}</button>`; }
+    div.innerHTML = sentCheckHTML(wasSent(who));
     card.querySelector(".body").appendChild(div);
   });
+  renderProgress();
 }
-$("#out").addEventListener("click", (e) => {
-  const b = e.target.closest("[data-sent]"); if (!b) return;
-  const card = b.closest(".card"); const who = whoOf(card);
-  if (!wasSent(who)) {
-    track("sent/" + who, "Sent · " + who);
-    track("sent-total", "Letters reported sent (all)");
-    track("sent-role/" + (role || "unknown"), "Letters reported sent by " + (role || "unknown"));
-    gaEvent("report_sent", gaCardParams(card));
-    try { localStorage.setItem(sentKey(who), "1"); } catch (_) {}
-  }
-  b.closest(".sent").innerHTML = sentDoneHTML();
+function reportSent(card, who) {
+  track("sent/" + who, "Sent · " + who);
+  track("sent-total", "Letters reported sent (all)");
+  track("sent-role/" + (role || "unknown"), "Letters reported sent by " + (role || "unknown"));
+  gaEvent("report_sent", gaCardParams(card));
+  writeFlag(reportedKey(who), true);
+}
+$("#out").addEventListener("change", (e) => {
+  const box = e.target.closest("[data-sent]"); if (!box) return;
+  const card = box.closest(".card"); const who = whoOf(card);
+  if (box.checked && !wasReported(who)) reportSent(card, who);
+  writeFlag(sentKey(who), box.checked);
+  card.querySelector(".sent").classList.remove("nudge");
+  if (pendingNudge === who) pendingNudge = null;
+  renderProgress();
 });
+// Coming back from Gmail / a contact form: gently point at the tick box of the card they just used.
+function nudgeOnReturn() {
+  if (document.visibilityState !== "visible" || !pendingNudge) return;
+  const who = pendingNudge; pendingNudge = null;
+  if (wasSent(who)) return;
+  const card = sendCards().find(c => whoOf(c) === who); if (!card) return;
+  const sent = card.querySelector(".sent");
+  sent.classList.remove("nudge"); void sent.offsetWidth; sent.classList.add("nudge");
+  sent.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+document.addEventListener("visibilitychange", nudgeOnReturn);
+window.addEventListener("focus", nudgeOnReturn);
 
 /* ---- Public tally of people who reported sending (GoatCounter public counter) ---- */
 var tallyN = 0;
