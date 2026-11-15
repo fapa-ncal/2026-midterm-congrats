@@ -36,6 +36,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="styles.css?v=20261114a">
+<!-- Google Analytics: only on the published site, so local previews don't count. -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+if (location.hostname === "fapa-ncal.github.io") {
+  var ga = document.createElement("script");
+  ga.async = true;
+  ga.src = "https://www.googletagmanager.com/gtag/js?id=G-BCVDH1E77W";
+  document.head.appendChild(ga);
+  gtag("js", new Date());
+  gtag("config", "G-BCVDH1E77W", { allow_google_signals: false, allow_ad_personalization_signals: false });
+}
+</script>
 </head>
 <body>
 
