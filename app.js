@@ -358,6 +358,23 @@ applyRole();
 function track(path, title) {
   try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title: title || path, event: true }); } catch (_) {}
 }
+
+/* ---- Google Analytics events: ZIP × role. ZIP is sent only for valid, found lookups. ---- */
+function gaEvent(name, params) {
+  try { if (typeof window.gtag === "function") window.gtag("event", name, params); } catch (_) {}
+}
+function gaZip() {
+  if (!current || current.error || !ZIP[current.zip]) return undefined;
+  return current.example ? "example" : current.zip;
+}
+function officeOf(card) {
+  const m = whoOf(card).match(/^(CA|SD|AD)-/);
+  return m ? m[1] : "MAYOR";
+}
+function gaCardParams(card) {
+  return { zip: gaZip(), role: role || "unknown", office: officeOf(card), recipient: whoOf(card) };
+}
+const GA_COPY_EVENTS = { "copy-email": "copy_email", "copy-letter": "copy_letter" };
 function actionOf(el) {
   if (el.dataset.copyletter !== undefined) return "copy-letter";
   if (el.dataset.copy !== undefined) return "copy-email";
@@ -375,6 +392,8 @@ $("#out").addEventListener("click", (e) => {
   const card = el.closest(".card"); if (!card) return;
   const act = actionOf(el); if (!act) return;
   const who = whoOf(card);
+  const copyEvent = GA_COPY_EVENTS[act];
+  gaEvent(copyEvent || "send_click", copyEvent ? gaCardParams(card) : { ...gaCardParams(card), method: act });
   track("send/" + act + "/" + who, act + " · " + who + " · " + (role || ""));
   track("total/" + act, "All recipients · " + act);
   if (["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"].includes(act)) {
@@ -383,9 +402,21 @@ $("#out").addEventListener("click", (e) => {
   }
   const sr = card.querySelector(".sent"); if (sr) sr.hidden = false;
 }, true);
-document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => track("role/" + b.dataset.role, "Chose: " + b.dataset.role)));
-$("#form").addEventListener("submit", () => track("lookup", "ZIP lookup"));
-$("#copy-letter").addEventListener("click", () => track("total/copy-template", "Copied template letter"));
+document.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => {
+  track("role/" + b.dataset.role, "Chose: " + b.dataset.role);
+  gaEvent("select_role", { role: b.dataset.role });
+}));
+$("#form").addEventListener("submit", () => {
+  track("lookup", "ZIP lookup");
+  // Runs after the lookup handler above, so `current` already holds this search.
+  const result = current.error ? "invalid" : ZIP[current.zip] ? "found" : "not_found";
+  gaEvent("zip_lookup", { zip: result === "found" ? current.zip : undefined, role: role || "unknown", result });
+});
+$("#copy-letter").addEventListener("click", () => {
+  track("total/copy-template", "Copied template letter");
+  gaEvent("copy_template", { role: role || "unknown" });
+});
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => gaEvent("lang_switch", { to: b.dataset.lang })));
 
 /* ---- "I sent it" self-report ---- */
 var SEND_ACTS = ["gmail", "gmail-app", "outlook", "outlook-work", "mail-app", "contact-form"];
@@ -416,6 +447,7 @@ $("#out").addEventListener("click", (e) => {
     track("sent/" + who, "Sent · " + who);
     track("sent-total", "Letters reported sent (all)");
     track("sent-role/" + (role || "unknown"), "Letters reported sent by " + (role || "unknown"));
+    gaEvent("report_sent", gaCardParams(card));
     try { localStorage.setItem(sentKey(who), "1"); } catch (_) {}
   }
   b.closest(".sent").innerHTML = sentDoneHTML();
